@@ -1,0 +1,60 @@
+name: Build all
+
+on:
+
+  workflow_dispatch:
+    inputs:
+      foo:
+        description: foo input
+        required: true
+        default: ALL
+        type: choice
+          - ALL
+          - abc
+          - def
+          - ghi
+
+      bar:
+        description: bar input
+        required: true
+        default: ALL
+        type: choice
+          - ALL
+          - x
+          - y
+          - z
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+
+  validate-inputs:
+    runs-on: ubuntu-latest
+    steps:
+      - if: ${{ ! contains(fromJson('["ALL","abc","def","ghi"]'), inputs.foo) }}
+        env:
+          foo: ${{ inputs.foo }}
+        run: |
+          echo "::error::${foo} is not valid for foo"
+          return 1
+      - if: ${{ ! contains(fromJson('["ALL","x","y","z"]'), inputs.bar) }}
+        env:
+          bar: ${{ inputs.bar }}
+        run: |
+          echo "::error::${bar} is not valid for bar"
+          return 1
+
+  do-all-things:
+    needs: validate-inputs
+    strategy:
+      matrix:
+        foo: ${{ (inputs.foo == 'ALL') && fromJson('["abc","def","ghi"]') || fromJson(format('["{0}"]', inputs.foo)) }}
+        bar: ${{ (inputs.bar == 'ALL') && fromJson('["x","y","z"]') || fromJson(format('["{0}"]', inputs.bar)) }}
+      fail-fast: false
+      max-parallel: 1
+    uses: tureba/wtest/.github/workflows/build-one.yml@main
+    with:
+      foo: ${{ matrix.foo }}
+      bar: ${{ matrix.bar }}

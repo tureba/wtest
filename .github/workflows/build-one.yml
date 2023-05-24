@@ -1,0 +1,28 @@
+name: Build one
+
+on:
+  workflow_call:
+    inputs:
+      foo:
+        description: foo input
+        required: true
+        type: string
+
+      bar:
+        description: bar input
+        required: true
+        type: string
+
+run-name: ${{ format('Building with foo={0} and bar={1}', inputs.foo, inputs.bar) }}
+
+jobs:
+
+  do-one-thing:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        run: |
+          echo "got foo: ${{ inputs.foo }}"
+          echo "got bar: ${{ inputs.bar }}"
+          # add random fail. around 1/32th of the time
+          [ $((RANDOM)) -gt 1000 ]

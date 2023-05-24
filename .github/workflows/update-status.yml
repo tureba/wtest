@@ -1,0 +1,36 @@
+name: Update status
+
+on:
+  workflow_run:
+    workflows: [Build one, Build all]
+
+jobs:
+
+  on-success:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - run: echo 'The triggering workflow passed'
+
+  on-failure:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'failure' }}
+    steps:
+      - run: echo 'The triggering workflow failed'
+
+  always:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        env:
+          KV: ${{ toJson(github.event.workflow_run) }}
+        run: |
+          (
+            echo
+            echo "### Event data"
+            echo
+            echo "| key | value |"
+            echo "| --- | --- |"
+            echo "${KV}" | jq -r 'to_entries[] | "|" + "\(.key)" + "|" + "\(.value)" + "|"'
+            echo
+          ) >> "${GITHUB_STEP_SUMMARY}"
