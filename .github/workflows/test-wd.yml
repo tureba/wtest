@@ -17,6 +17,10 @@ jobs:
           pwd
           ls -lh
 
+      - shell: bash
+        run: |
+          echo FOO=foo >>$GITHUB_ENV
+
   do-other-thing:
     uses: tureba/wtest/.github/workflows/test-wd-inner.yml@main
 
@@ -27,3 +31,4 @@ jobs:
         run: |
           pwd
           ls -lh
+          echo "x$FOO"
