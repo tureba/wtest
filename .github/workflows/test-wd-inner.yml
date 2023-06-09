@@ -1,0 +1,23 @@
+name: Test wd inner
+
+on:
+  workflow_call:
+
+jobs:
+  print-foo:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        run: |
+          pwd
+          ls -lh
+
+      - shell: bash
+        run: |
+          pwd
+          touch bar.txt
+
+      - shell: bash
+        run: |
+          pwd
+          ls -lh

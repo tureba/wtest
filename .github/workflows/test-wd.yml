@@ -1,0 +1,29 @@
+name: Test work directories
+
+on:
+  workflow_dispatch:
+
+jobs:
+  do-one-thing:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        run: |
+          pwd
+          touch foo.txt
+
+      - shell: bash
+        run: |
+          pwd
+          ls -lh
+
+  do-other-thing:
+    uses: tureba/wtest/.github/workflows/test-wd-inner.yml@main
+
+  do-last-thing:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        run: |
+          pwd
+          ls -lh
