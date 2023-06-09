@@ -1,0 +1,12 @@
+name: Test inner
+
+on:
+  workflow_call:
+
+jobs:
+  print-foo:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        run: |
+          echo "got foo: ${{ env.foo }}"
