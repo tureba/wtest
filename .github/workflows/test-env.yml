@@ -15,3 +15,5 @@ jobs:
           echo "got foo: ${{ env.foo }}"
   do-other-thing:
     uses: tureba/wtest/.github/workflows/test-env-inner.yml@main
+    env:
+      foo: two
