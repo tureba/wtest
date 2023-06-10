@@ -9,6 +9,7 @@ on:
         required: true
         default: ALL
         type: choice
+        options:
           - ALL
           - abc
           - def
@@ -19,6 +20,7 @@ on:
         required: true
         default: ALL
         type: choice
+        options:
           - ALL
           - x
           - y
@@ -29,6 +31,45 @@ defaults:
     shell: bash
 
 jobs:
+
+  print-inputs:
+    runs-on: ubuntu-latest
+    steps:
+
+      - env:
+          var: ${{ toJson(github.event) }}
+        run: |
+          echo "github.event: ${var}"
+
+      - env:
+          var: ${{ toJson(inputs) }}
+        run: |
+          echo "inputs: ${var}"
+
+      - env:
+          var: ${{ toJson(github.on) }}
+        run: |
+          echo "github.on: ${var}"
+
+      - env:
+          var: ${{ toJson(github.on.workflow_call) }}
+        run: |
+          echo "github.on.workflow_call: ${var}"
+
+      - env:
+          var: ${{ toJson(github.inputs) }}
+        run: |
+          echo "github.inputs: ${var}"
+
+      - env:
+          var: ${{ toJson(github.event.inputs) }}
+        run: |
+          echo "github.event.inputs: ${var}"
+
+      - env:
+          var: ${{ toJson(inputs.foo.options) }}
+        run: |
+          echo "inputs.foo.options: ${var}"
 
   validate-inputs:
     runs-on: ubuntu-latest
