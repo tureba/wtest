@@ -38,3 +38,13 @@ jobs:
               inputs: context.payload.inputs,
               });
 
+      - uses: actions/github-script@v6
+        with:
+          script: |
+            github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'bar.yml',
+              branch: context.ref,
+              event: 'workflow_dispatch',
+              });
