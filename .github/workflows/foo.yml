@@ -75,7 +75,6 @@ jobs:
                   workflow_id: 'bar.yml',
                   actor: 'github-actions[bot]',
                   event: 'workflow_dispatch',
-                  created: '>' + ts_start.toISOString(),
                   });
 
                 // iterate through each response
