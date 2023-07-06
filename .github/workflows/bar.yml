@@ -1,0 +1,28 @@
+name: Build bar
+
+on:
+  workflow_dispatch:
+    inputs:
+      first:
+        description: first input
+        required: true
+        type: string
+
+      second:
+        description: second input
+        required: true
+        type: string
+
+run-name: ${{ format('Building with first={0} and second={1}', inputs.first, inputs.second) }}
+
+jobs:
+
+  do-one-thing:
+    runs-on: ubuntu-latest
+    steps:
+      - shell: bash
+        run: |
+          echo "got first: ${{ inputs.first }}"
+          echo "got second: ${{ inputs.second }}"
+          # add random fail. around 1/32th of the time
+          [ $((RANDOM)) -gt 1000 ]
