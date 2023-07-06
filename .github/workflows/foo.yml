@@ -31,7 +31,7 @@ jobs:
             github.rest.actions.createWorkflowDispatch({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              workflow_id: 'Build bar',
+              workflow_id: 'bar.yml',
               ref: context.ref,
               inputs: context.payload.inputs,
               });
