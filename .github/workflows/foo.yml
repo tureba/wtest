@@ -41,10 +41,17 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            github.rest.actions.listWorkflowRuns({
+            const iterator = github.paginate.iterator(github.rest.actions.listWorkflowRuns, {
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'bar.yml',
               branch: context.ref,
               event: 'workflow_dispatch',
               });
+
+            // iterate through each response
+            for await (const { data: runs } of iterator) {
+              for (const run of runs) {
+                console.log("Run #%d: %s", run.number, run.name);
+              }
+            }
