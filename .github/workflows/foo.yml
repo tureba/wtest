@@ -65,7 +65,7 @@ jobs:
                 ref: context.ref,
                 inputs: {
                     id: new_id,
-                    parent: context.runId,
+                    parent: context.runId.toString(),
                   }
                 });
 
@@ -92,7 +92,6 @@ jobs:
                     // if there are multiple candidates, we might filter further
                     // but when the match was found, use it and break to the next
                     if (run.name === new_id) {
-                      console.log(run);
                       workflows[i] = run;
                       found = true;
                       break;
@@ -107,3 +106,7 @@ jobs:
 
               } while (!found);
             }
+            for (const w of workflows) {
+              console.log(w);
+            }
+
