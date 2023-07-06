@@ -48,6 +48,7 @@ jobs:
 
               // mark the time right before launching it
               var ts_start = new Date();
+              console.log(ts_start.toISOString());
 
               // dispatch the event
               github.rest.actions.createWorkflowDispatch({
@@ -76,6 +77,7 @@ jobs:
                   actor: 'github-actions[bot]',
                   event: 'workflow_dispatch',
                   });
+                console.log(ts_start.toISOString());
 
                 // iterate through each response
                 for await (const { data: runs } of iterator) {
