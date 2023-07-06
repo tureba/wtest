@@ -36,6 +36,7 @@ jobs:
             console.log(context)
 
       - uses: actions/github-script@v6
+        id: workflows
         with:
           script: |
             // sleep function
@@ -109,4 +110,12 @@ jobs:
             for (const i of Object.keys(workflows)) {
               console.log(workflows[i]);
             }
+            return workflows;
 
+      - shell: bash
+        env:
+          result: ${{ steps.workflows.outputs.result }}
+        run:
+          cat <<EOF
+          $result
+          EOF
