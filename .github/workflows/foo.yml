@@ -45,7 +45,7 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'bar.yml',
-              actor: 'octocat',
+              actor: 'github-actions[bot]',
               });
 
             // iterate through each response
