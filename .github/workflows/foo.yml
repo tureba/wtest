@@ -33,6 +33,6 @@ jobs:
               repo: context.repo.repo,
               workflow_id: 'Build bar',
               ref: context.ref,
-              inputs: { first: ${{ inputs.first }}, second: ${{ inputs.second }} },
+              inputs: context.payload.inputs,
               });
 
