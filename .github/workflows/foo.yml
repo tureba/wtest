@@ -114,10 +114,12 @@ jobs:
 
       - shell: bash
         env:
-          result: ${{ steps.workflows.outputs.result }}
-        run:
-          echo '```json' >>$GITHUB_STEP_SUMMARY
-          cat >>$GITHUB_STEP_SUMMARY <<EOF
-          $result
-          EOF
-          echo '```' >>$GITHUB_STEP_SUMMARY
+          result: ${{ toJson(steps.workflows.outputs.result) }}
+        run: |
+          (
+            echo '```json'
+            cat <<EOF
+            $result
+            EOF
+            echo '```'
+          ) >>$GITHUB_STEP_SUMMARY
