@@ -77,14 +77,14 @@ jobs:
                   workflow_id: 'bar.yml',
                   actor: 'github-actions[bot]',
                   event: 'workflow_dispatch',
-                  created: '>' + ts_start.toISOString(),
+                  created: '>=' + ts_start.toISOString(),
                   });
 
                 // iterate through each response
                 for await (const { data: runs } of iterator) {
                   for (const run of runs) {
                     // if there are multiple candidates, we might filter further
-                    // but when the match was found, use it and break to the next 
+                    // but when the match was found, use it and break to the next
                     if (true) {
                       console.log(run);
                       found = true;
