@@ -43,8 +43,12 @@ jobs:
               return new Promise(resolve => setTimeout(resolve, ms));
             }
 
+            var workflows = {};
+
             // launch each bar workflow independently
             for (let i = 0; i < context.payload.inputs.iterations; i++) {
+
+              const new_id = context.payload.inputs.first + '-' + context.payload.inputs.second + '-' + i;
 
               // mark the time right before launching it
               var ts_start = new Date();
@@ -60,8 +64,8 @@ jobs:
                 workflow_id: 'bar.yml',
                 ref: context.ref,
                 inputs: {
-                    first: context.payload.inputs.first + '-' + i,
-                    second: context.payload.inputs.second + '-' + i,
+                    id: new_id,
+                    parent: context.runId,
                   }
                 });
 
@@ -87,8 +91,9 @@ jobs:
                   for (const run of runs) {
                     // if there are multiple candidates, we might filter further
                     // but when the match was found, use it and break to the next
-                    if (true) {
+                    if (run.name === new_id) {
                       console.log(run);
+                      workflows[i] = run;
                       found = true;
                       break;
                     }
