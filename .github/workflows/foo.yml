@@ -116,10 +116,8 @@ jobs:
         env:
           result: ${{ toJson(steps.workflows.outputs.result) }}
         run: |
-          (
-            echo '```json'
-            cat <<EOF
-            $result
-            EOF
-            echo '```'
-          ) >>$GITHUB_STEP_SUMMARY
+          cat <<EOF >>$GITHUB_STEP_SUMMARY
+          ```json
+          $result
+          ```
+          EOF
