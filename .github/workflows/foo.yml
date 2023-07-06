@@ -46,6 +46,7 @@ jobs:
               repo: context.repo.repo,
               workflow_id: 'bar.yml',
               actor: 'github-actions[bot]',
+              event: 'workflow_dispatch',
               });
 
             // iterate through each response
