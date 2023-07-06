@@ -50,6 +50,6 @@ jobs:
             // iterate through each response
             for await (const { data: runs } of iterator) {
               for (const run of runs) {
-                console.log("Run #%d: %s", run.number, run.name);
+                console.log(run);
               }
             }
