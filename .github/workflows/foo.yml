@@ -118,6 +118,6 @@ jobs:
         run: |
           (
             echo '```json'
-            echo "$result"
+            echo "$result" | jq .
             echo '```'
           ) >> $GITHUB_STEP_SUMMARY
