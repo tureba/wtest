@@ -106,7 +106,7 @@ jobs:
 
               } while (!found);
             }
-            for (const w of workflows) {
-              console.log(w);
+            for (const i of Object.keys(workflows)) {
+              console.log(workflows[i]);
             }
 
