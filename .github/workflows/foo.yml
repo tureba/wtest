@@ -114,7 +114,7 @@ jobs:
 
       - shell: bash
         env:
-          result: ${{ toJson(steps.workflows.outputs.result) }}
+          result: ${{ steps.workflows.outputs.result }}
         run: |
           (
             echo '```json'
