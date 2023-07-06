@@ -7,13 +7,21 @@ on:
         description: first input
         required: true
         type: string
+        default: one
 
       second:
         description: second input
         required: true
         type: string
+        default: two
 
-run-name: ${{ format('Building with first={0} and second={1}', inputs.first, inputs.second) }}
+      iterations:
+        description: number of iterations
+        required: false
+        type: string
+        default: 2
+
+run-name: ${{ format('Building with first={0} and second={1}, {2} iterations', inputs.first, inputs.second, inputs.iterations) }}
 
 jobs:
 
@@ -30,28 +38,63 @@ jobs:
       - uses: actions/github-script@v6
         with:
           script: |
-            github.rest.actions.createWorkflowDispatch({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'bar.yml',
-              ref: context.ref,
-              inputs: context.payload.inputs,
-              });
+            // sleep function
+            function sleep(ms) {
+              return new Promise(resolve => setTimeout(resolve, ms));
+            }
 
-      - uses: actions/github-script@v6
-        with:
-          script: |
-            const iterator = github.paginate.iterator(github.rest.actions.listWorkflowRuns, {
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'bar.yml',
-              actor: 'github-actions[bot]',
-              event: 'workflow_dispatch',
-              });
+            // launch each bar workflow independently
+            for (let i = 0; i < context.payload.inputs.iterations; i++) {
 
-            // iterate through each response
-            for await (const { data: runs } of iterator) {
-              for (const run of runs) {
-                console.log(run);
-              }
+              // mark the time right before launching it
+              var ts_start = new Date();
+
+              // dispatch the event
+              github.rest.actions.createWorkflowDispatch({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'bar.yml',
+                ref: context.ref,
+                inputs: {
+                    first: context.payload.inputs.first + '-' + i,
+                    second: context.payload.inputs.second + '-' + i,
+                  }
+                });
+
+              // unfortunately, dispatching an event does not return the run id that was started
+              // so we poll the recent runs started, knowing this is not ideal
+              let found = false;
+              do {
+                // pooling immediately always returns empty, so start by waiting a second
+                await sleep(1000);
+
+                // fetch the list of runs that match the one dispatched
+                const iterator = github.paginate.iterator(github.rest.actions.listWorkflowRuns, {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  workflow_id: 'bar.yml',
+                  actor: 'github-actions[bot]',
+                  event: 'workflow_dispatch',
+                  created: '>' + ts_start.toISOString(),
+                  });
+
+                // iterate through each response
+                for await (const { data: runs } of iterator) {
+                  for (const run of runs) {
+                    // if there are multiple candidates, we might filter further
+                    // but when the match was found, use it and break to the next 
+                    if (true) {
+                      console.log(run);
+                      found = true;
+                      break;
+                    }
+                  }
+                  if (found)
+                    break;
+                }
+
+                // if not found, the next search mark the time after launching it and sleeping 1s
+                ts_start = new Date(ts_start.getTime() + 1000);
+
+              } while (!found);
             }
