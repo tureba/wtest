@@ -45,8 +45,6 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               workflow_id: 'bar.yml',
-              branch: context.ref,
-              event: 'workflow_dispatch',
               });
 
             // iterate through each response
