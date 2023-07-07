@@ -32,9 +32,8 @@ jobs:
         run: |
           (
             caller=${caller%%:*}
-            echo "## Caller"
             echo
-            echo "[$caller](https://github.com/tureba/wtest/actions/runs/$caller)"
+            echo "## Dispatched by [$caller](https://github.com/tureba/wtest/actions/runs/$caller)"
             echo
           ) >> $GITHUB_STEP_SUMMARY
 
