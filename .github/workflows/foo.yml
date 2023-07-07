@@ -61,6 +61,8 @@ jobs:
                 var ts_start = new Date();
                 // truncate to second, as that is the granularity of github event tracking
                 ts_start.setMilliseconds(0);
+                // shift one second back
+                ts_start = new Date(ts_start.getTime() - 1000);
 
                 // dispatch the event
                 github.rest.actions.createWorkflowDispatch({
