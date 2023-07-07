@@ -122,6 +122,6 @@ jobs:
             echo
             echo "| name | URL |"
             echo "| --- | --- |"
-            echo "$result" | jq '.[]|("|" + .name + "|" + .html_url + "|")'
+            echo "$result" | jq -r '.[]|("|" + .name + "|" + .html_url + "|")'
             echo
           ) >> $GITHUB_STEP_SUMMARY
