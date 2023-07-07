@@ -48,5 +48,6 @@ jobs:
           echo "got first: ${{ inputs.first }}"
           echo "got second: ${{ inputs.second }}"
           echo "got reason: ${{ inputs.reason }}"
+          echo "got secret: ${{ secrets.yes }}"
           # add random fail. around 1/32th of the time
           [ $((RANDOM)) -gt 1000 ]
