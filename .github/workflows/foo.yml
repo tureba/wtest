@@ -6,22 +6,24 @@ on:
       first:
         description: first input
         required: true
-        type: string
-        default: one
+        type: choice
+        default: ALL
+        options:
+          - ALL
+          - a
+          - b
 
       second:
         description: second input
         required: true
-        type: string
-        default: two
+        type: choice
+        default: ALL
+        options:
+          - ALL
+          - x
+          - y
 
-      iterations:
-        description: number of iterations
-        required: false
-        type: string
-        default: 2
-
-run-name: ${{ format('Building with first={0} and second={1}, {2} iterations', inputs.first, inputs.second, inputs.iterations) }}
+run-name: ${{ format('Building with first={0} and second={1}', inputs.first, inputs.second) }}
 
 jobs:
 
@@ -45,67 +47,71 @@ jobs:
             }
 
             var workflows = {};
+            const FIRST = (context.payload.inputs.first === 'ALL' ? ['a','b'] : [context.payload.inputs.first]);
+            const SECOND = (context.payload.inputs.second === 'ALL' ? ['x','y'] : [context.payload.inputs.second]);
 
-            // launch each bar workflow independently
-            for (let i = 0; i < context.payload.inputs.iterations; i++) {
+            // launch each workflow
+            for (const first of FIRST) {
+              for (const second of SECOND) {
 
-              const new_id = context.payload.inputs.first + '-' + context.payload.inputs.second + '-' + i;
+                // should match the name in the bar.yml workflow
+                const new_id = context.runId.toString() + ': ' + context.payload.inputs.first + '-' + context.payload.inputs.second;
 
-              // mark the time right before launching it
-              var ts_start = new Date();
-              // truncate to second, as that is the granularity of github event tracking
-              ts_start.setMilliseconds(0);
-              // shift one second back ?
-              ts_start = new Date(ts_start.getTime() - 1000);
+                // mark the time right before launching it
+                var ts_start = new Date();
+                // truncate to second, as that is the granularity of github event tracking
+                ts_start.setMilliseconds(0);
 
-              // dispatch the event
-              github.rest.actions.createWorkflowDispatch({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                workflow_id: 'bar.yml',
-                ref: context.ref,
-                inputs: {
-                    id: new_id,
-                    parent: context.runId.toString(),
-                  }
-                });
-
-              // unfortunately, dispatching an event does not return the run id that was started
-              // so we poll the recent runs started, knowing this is not ideal
-              let found = false;
-              do {
-                // pooling immediately always returns empty, so start by waiting a second
-                await sleep(1000);
-
-                // fetch the list of runs that match the one dispatched
-                const iterator = github.paginate.iterator(github.rest.actions.listWorkflowRuns, {
+                // dispatch the event
+                github.rest.actions.createWorkflowDispatch({
                   owner: context.repo.owner,
                   repo: context.repo.repo,
                   workflow_id: 'bar.yml',
-                  actor: 'github-actions[bot]',
-                  event: 'workflow_dispatch',
-                  created: '>=' + ts_start.toISOString(),
-                  });
-
-                // iterate through each response
-                for await (const { data: runs } of iterator) {
-                  for (const run of runs) {
-                    // if there are multiple candidates, we might filter further
-                    // but when the match was found, use it and break to the next
-                    if (run.name === new_id) {
-                      workflows[i] = run;
-                      found = true;
-                      break;
-                    }
+                  ref: context.ref,
+                  inputs: {
+                      reason: context.runId.toString(),
+                      first: first,
+                      second: second,
                   }
-                  if (found)
-                    break;
-                }
+                });
 
-                // if not found, the next search mark the time after launching it and sleeping 1s
-                ts_start = new Date(ts_start.getTime() + 1000);
+                // unfortunately, dispatching an event does not return the run id that was started
+                // so we poll the recent runs started, knowing this is not ideal
+                let found = false;
+                do {
+                  // pooling immediately always returns empty, so start by waiting a second
+                  await sleep(1000);
 
-              } while (!found);
+                  // fetch the list of runs that match the one dispatched
+                  const iterator = github.paginate.iterator(github.rest.actions.listWorkflowRuns, {
+                    owner: context.repo.owner,
+                    repo: context.repo.repo,
+                    workflow_id: 'bar.yml',
+                    actor: 'github-actions[bot]',
+                    event: 'workflow_dispatch',
+                    created: '>=' + ts_start.toISOString(),
+                    });
+
+                  // iterate through each response
+                  for await (const { data: runs } of iterator) {
+                    for (const run of runs) {
+                      // if there are multiple candidates, we might filter further
+                      // but when the match was found, use it and break to the next
+                      if (run.name === new_id) {
+                        workflows[i] = run;
+                        found = true;
+                        break;
+                      }
+                    }
+                    if (found)
+                      break;
+                  }
+
+                  // if not found, the next search mark the time after launching it and sleeping 1s
+                  ts_start = new Date(ts_start.getTime() + 1000);
+
+                } while (!found);
+              }
             }
             return workflows;
 

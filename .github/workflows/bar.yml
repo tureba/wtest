@@ -3,17 +3,22 @@ name: Build bar
 on:
   workflow_dispatch:
     inputs:
-      id:
-        description: id of the thing
+      first:
+        description: first thing
         required: true
         type: string
 
-      parent:
+      second:
+        description: second thing
+        required: true
+        type: string
+
+      reason:
         description: id of the parent run
         required: true
         type: string
 
-run-name: ${{ inputs.id }}
+run-name: ${{ inputs.reason && format('{0}: {1}-{2}', inputs.reason, inputs.first, inputs.second) || format('{0}-{1}', inputs.first, inputs.second) }}
 
 jobs:
 
@@ -27,7 +32,8 @@ jobs:
 
       - shell: bash
         run: |
-          echo "got id: ${{ inputs.id }}"
-          echo "got parent: ${{ inputs.parent }}"
+          echo "got first: ${{ inputs.first }}"
+          echo "got second: ${{ inputs.second }}"
+          echo "got reason: ${{ inputs.reason }}"
           # add random fail. around 1/32th of the time
           [ $((RANDOM)) -gt 1000 ]
