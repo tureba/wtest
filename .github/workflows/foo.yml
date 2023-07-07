@@ -55,7 +55,7 @@ jobs:
               for (const second of SECOND) {
 
                 // should match the name in the bar.yml workflow
-                const new_id = context.runId.toString() + ': ' + context.payload.inputs.first + '-' + context.payload.inputs.second;
+                const new_name = context.runId.toString() + ': ' + context.payload.inputs.first + '-' + context.payload.inputs.second;
 
                 // mark the time right before launching it
                 var ts_start = new Date();
@@ -69,7 +69,7 @@ jobs:
                   workflow_id: 'bar.yml',
                   ref: context.ref,
                   inputs: {
-                      reason: context.runId.toString(),
+                      reason: new_name,
                       first: first,
                       second: second,
                   }
@@ -97,7 +97,7 @@ jobs:
                     for (const run of runs) {
                       // if there are multiple candidates, we might filter further
                       // but when the match was found, use it and break to the next
-                      if (run.name === new_id) {
+                      if (run.name === new_name) {
                         workflows[i] = run;
                         found = true;
                         break;
