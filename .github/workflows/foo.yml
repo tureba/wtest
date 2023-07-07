@@ -98,7 +98,7 @@ jobs:
                       // if there are multiple candidates, we might filter further
                       // but when the match was found, use it and break to the next
                       if (run.name === new_name) {
-                        workflows[i] = run;
+                        workflows[new_name] = run;
                         found = true;
                         break;
                       }
