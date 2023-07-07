@@ -14,11 +14,11 @@ on:
         type: string
 
       reason:
-        description: id of the parent run
-        required: true
+        description: reason from the parent run
+        required: false
         type: string
 
-run-name: ${{ inputs.reason && format('{0}: {1}-{2}', inputs.reason, inputs.first, inputs.second) || format('{0}-{1}', inputs.first, inputs.second) }}
+run-name: ${{ inputs.reason || format('{0}-{1}', inputs.first, inputs.second) }}
 
 jobs:
 
