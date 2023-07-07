@@ -25,6 +25,19 @@ jobs:
   do-one-thing:
     runs-on: ubuntu-latest
     steps:
+      - shell: bash
+        if: ${{ inputs.reason }}
+        env:
+          caller: ${{ inputs.reason }}
+        run: |
+          (
+            caller=${caller%%:*}
+            echo "## Caller"
+            echo
+            echo "[$caller](https://github.com/tureba/wtest/actions/runs/$caller)"
+            echo
+          ) >> $GITHUB_STEP_SUMMARY
+
       - uses: actions/github-script@v6
         with:
           script: |
