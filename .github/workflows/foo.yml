@@ -55,7 +55,7 @@ jobs:
               for (const second of SECOND) {
 
                 // should match the name in the bar.yml workflow
-                const new_name = context.runId.toString() + ': ' + context.payload.inputs.first + '-' + context.payload.inputs.second;
+                const new_name = context.runId.toString() + ': ' + first + '-' + second;
 
                 // mark the time right before launching it
                 var ts_start = new Date();
