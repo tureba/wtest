@@ -30,12 +30,13 @@ jobs:
         env:
           caller: ${{ inputs.reason }}
         run: |
-          (
-            caller=${caller%%:*}
+          # if the reason starts with a number and a colon, the workflow was likely called by API from another
+          caller=${caller%%:*}
+          if [[ "$caller" =~ ^[0-9]+$ ]]; then
             echo
             echo "## Dispatched by [$caller](https://github.com/tureba/wtest/actions/runs/$caller)"
             echo
-          ) >> $GITHUB_STEP_SUMMARY
+          fi >> "${GITHUB_STEP_SUMMARY}"
 
       - uses: actions/github-script@v6
         with:
