@@ -107,9 +107,6 @@ jobs:
 
               } while (!found);
             }
-            for (const i of Object.keys(workflows)) {
-              console.log(workflows[i]);
-            }
             return workflows;
 
       - shell: bash
@@ -120,8 +117,8 @@ jobs:
             echo
             echo "### Workflows started"
             echo
-            echo "| name | URL |"
-            echo "| --- | --- |"
-            echo "$result" | jq -r '.[]|("|" + .name + "|" + .html_url + "|")'
+            echo "| name | run ID | URL |"
+            echo "| --- | --- | --- |"
+            echo "$result" | jq -r '.[]|("|" + .name + "|" + (.run_number|tostring) + "|" + .html_url + "|")'
             echo
           ) >> $GITHUB_STEP_SUMMARY
