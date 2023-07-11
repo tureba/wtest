@@ -45,7 +45,7 @@ jobs:
         run: |
           (
             echo
-            jq -r '.[]|("# [" + (.name | sub("^[0-9]+: ";"")) + "](" + .url + ")")' <<<"${caller}"
+            jq -r '.[]|("# [" + (.name | sub("^[0-9]+: ";"")) + "](" + .html_url + ")")' <<<"${caller}"
             echo
           ) >> "${GITHUB_STEP_SUMMARY}"
 
