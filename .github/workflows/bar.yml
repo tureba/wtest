@@ -34,7 +34,7 @@ jobs:
           caller=${caller%%:*}
           if [[ "$caller" =~ ^[0-9]+$ ]]; then
             echo
-            echo "## Dispatched by [$caller](https://github.com/tureba/wtest/actions/runs/$caller)"
+            echo "# Dispatched by [$caller](https://github.com/tureba/wtest/actions/runs/$caller)"
             echo
           fi >> "${GITHUB_STEP_SUMMARY}"
 
