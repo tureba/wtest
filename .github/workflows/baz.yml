@@ -1,0 +1,40 @@
+name: Build baz
+
+on:
+  workflow_dispatch:
+    inputs:
+      first:
+        description: first input
+        required: true
+        type: choice
+        default: ALL
+        options:
+          - ALL
+          - a
+          - b
+
+      second:
+        description: second input
+        required: true
+        type: choice
+        default: ALL
+        options:
+          - ALL
+          - x
+          - y
+
+run-name: ${{ format('Building with first={0} and second={1}', inputs.first, inputs.second) }}
+
+jobs:
+
+  do-all-things:
+    strategy:
+      matrix:
+        first: ${{ (inputs.first == 'ALL') && fromJson('["a","b"]') || fromJson(format('["{0}"]', inputs.first)) }}
+        second: ${{ (inputs.second == 'ALL') && fromJson('["x","y"]') || fromJson(format('["{0}"]', inputs.second)) }}
+      fail-fast: false
+      max-parallel: 1
+    uses: tureba/wtest/.github/workflows/bar.yml@main
+    with:
+      first: ${{ matrix.first }}
+      second: ${{ matrix.second }}

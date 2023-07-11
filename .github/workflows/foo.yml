@@ -113,11 +113,8 @@ jobs:
             return workflows;
 
       - shell: bash
+        name: List workflows in the summary
         env:
-          result: ${{ steps.workflows.outputs.result }}
+          workflows: ${{ steps.workflows.outputs.result }}
         run: |
-          (
-            echo
-            echo "$result" | jq -r '.[]|("# [" + (.name | sub("^[0-9]+: ";"")) + "](" + .html_url + ")")'
-            echo
-          ) >> "${GITHUB_STEP_SUMMARY}"
+          jq -r '.[]|("# [" + (.name | sub("^[0-9]+: ";"")) + "](" + .html_url + ")")' <<<"${workflows}" >> "${GITHUB_STEP_SUMMARY}"
