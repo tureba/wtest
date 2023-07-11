@@ -1,6 +1,17 @@
 name: Build bar
 
 on:
+  workflow_call:
+    inputs:
+      first:
+        description: first thing
+        required: true
+        type: string
+
+      second:
+        description: second thing
+        required: true
+        type: string
   workflow_dispatch:
     inputs:
       first:
