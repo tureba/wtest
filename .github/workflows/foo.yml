@@ -118,6 +118,6 @@ jobs:
         run: |
           (
             echo
-            echo "$result" | jq -r '.[]|("# [" + (.name | sub("^[0-9]+: ";"")) + "](" + .html_url + ")")'
+            echo "$result" | jq -r '.[]|("# [" + (.name | sub("^[0-9]+: ";"")) + "](" + .url + ")")'
             echo
           ) >> "${GITHUB_STEP_SUMMARY}"
