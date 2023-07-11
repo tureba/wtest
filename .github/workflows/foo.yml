@@ -118,12 +118,6 @@ jobs:
         run: |
           (
             echo
-            echo "## Workflows started"
-            echo
-            echo "| name | run ID | URL |"
-            echo "| --- | --- | --- |"
-            echo "$result" | jq -r '.[]|("|" + .name + "|" + (.run_number|tostring) + "|" + .html_url + "|")'
-            echo
-            echo "$result" | jq -r '.[]|("# [" + .name + "](" + .html_url + ")")'
+            echo "$result" | jq -r '.[]|("# [" + (.name | sub("^[0-9]+: ";"")) + "](" + .html_url + ")")'
             echo
           ) >> "${GITHUB_STEP_SUMMARY}"
