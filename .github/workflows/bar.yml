@@ -67,6 +67,7 @@ jobs:
 
       - shell: bash
         run: |
+          echo "this is a different branch"
           echo "got first: ${{ inputs.first }}"
           echo "got second: ${{ inputs.second }}"
           echo "got reason: ${{ inputs.reason }}"

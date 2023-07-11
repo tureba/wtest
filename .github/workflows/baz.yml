@@ -34,7 +34,7 @@ jobs:
         second: ${{ (inputs.second == 'ALL') && fromJson('["x","y"]') || fromJson(format('["{0}"]', inputs.second)) }}
       fail-fast: false
       max-parallel: 1
-    uses: tureba/wtest/.github/workflows/bar.yml@main
+    uses: ./.github/workflows/bar.yml
     with:
       first: ${{ matrix.first }}
       second: ${{ matrix.second }}
